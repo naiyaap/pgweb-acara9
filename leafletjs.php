@@ -12,9 +12,12 @@
         }
 
         #map {
-            width: 100%;  
-            height: 80vh; 
-            border-radius: 10px;
+            width: 100%;
+            height: 60vh; 
+        }
+
+        #informasi{
+            text-align: right;
         }
 
         #title{
@@ -50,12 +53,81 @@
 </head>
 <body>
 <h2 id="title">WebGIS Kabupaten Sleman</h2>
-    
+
     <!-- Konten Utama -->
     <div class="container my-4">
+        <div class="row mb-4">
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5" style="color: #31694E;">
+                <h5>Informasi Kabupaten Sleman</h5>
+                <p style="font-size: 0.9rem; text-align: justify;">
+                    Kabupaten Sleman adalah salah satu kabupaten yang terletak di Daerah Istimewa Yogyakarta, Indonesia. Ibu kotanya berada di Kapanewon Sleman.
+                    Secara geografis, Kabupaten Sleman terletak di antara 110° 13′ 00″ hingga 110° 33′ 00″ Bujur Timur dan 7° 34′ 51″ hingga 7° 47′ 30″ Lintang Selatan.
+                    Bagian utara kabupaten ini merupakan kawasan pegunungan dengan puncak Gunung Merapi.
+                    Pada tahun 2022, jumlah penduduk Kabupaten Sleman mencapai 1.147.562 jiwa dengan luas wilayah 574,82 km².
+                    Sleman merupakan daerah dengan pertumbuhan ekonomi terbesar di Daerah Istimewa Yogyakarta dan memiliki banyak destinasi wisata menarik seperti Candi Prambanan dan Lava Tour Merapi.
+                </p>
+                <p style="font-size: 0.9rem; text-align: justify;">
+                    Sleman dikenal sebagai "Kota Seribu Candi" karena banyaknya candi yang ditemukan di wilayah ini, baik yang besar maupun kecil. Selain itu, Sleman juga merupakan pusat pendidikan di Yogyakarta dengan banyaknya perguruan tinggi ternama. Wilayah ini memiliki potensi wisata yang beragam, mulai dari wisata alam di lereng Gunung Merapi, wisata budaya dengan berbagai candi, hingga wisata kuliner yang kaya rasa.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tabel Data Kecamatan -->
         <div class="card shadow">
+            <div class="card-header text-white" style="background-color:#31694E;">
+                <h5 class="mb-0 text-center">Data Kecamatan Kabupaten Sleman</h5>
+            </div>
             <div class="card-body">
-                <div id="map"></div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Kecamatan</th>
+                                <th>Luas (km²)</th>
+                                <th>Jumlah Penduduk</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Koneksi ke database
+                            $conn = new mysqli("localhost", "root", "", "pgweb_acara8");
+                            if ($conn->connect_error) {
+                                die("Koneksi gagal: " . $conn->connect_error);
+                            }
+
+                            $sql = "SELECT * FROM data_kecamatan";
+                            $result = $conn->query($sql);
+                            $no = 1;
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<tr>
+                                            <td>{$no}</td>
+                                            <td>{$row['kecamatan']}</td>
+                                            <td>{$row['luas']}</td>
+                                            <td>{$row['jumlah_penduduk']}</td>
+                                            <td>{$row['latitude']}</td>
+                                            <td>{$row['longitude']}</td>
+                                        </tr>";
+                                    $no++;
+                                }
+                            } else {
+                                echo "<tr><td colspan='6'>Tidak ada data kecamatan</td></tr>";
+                            }
+                            $conn->close();
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -76,60 +148,6 @@
         </div>
     </div>
     </div>
-
-    <!-- Tabel Data Kecamatan -->
-<div class="container my-5">
-    <div class="card shadow">
-        <div class="card-header text-white" style="background-color:#31694E;">
-            <h5 class="mb-0 text-center">Data Kecamatan Kabupaten Sleman</h5>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama Kecamatan</th>
-                            <th>Luas (km²)</th>
-                            <th>Jumlah Penduduk</th>
-                            <th>Latitude</th>
-                            <th>Longitude</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        // Koneksi ke database
-                        $conn = new mysqli("localhost", "root", "", "pgweb_acara8");
-                        if ($conn->connect_error) {
-                            die("Koneksi gagal: " . $conn->connect_error);
-                        }
-
-                        $sql = "SELECT * FROM data_kecamatan";
-                        $result = $conn->query($sql);
-                        $no = 1;
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>
-                                        <td>{$no}</td>
-                                        <td>{$row['kecamatan']}</td>
-                                        <td>{$row['luas']}</td>
-                                        <td>{$row['jumlah_penduduk']}</td>
-                                        <td>{$row['latitude']}</td>
-                                        <td>{$row['longitude']}</td>
-                                    </tr>";
-                                $no++;
-                            }
-                        } else {
-                            echo "<tr><td colspan='6'>Tidak ada data kecamatan</td></tr>";
-                        }
-                        $conn->close();
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
