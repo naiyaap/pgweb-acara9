@@ -25,7 +25,7 @@ $id = $_GET['id'];
     } 
     $conn->close();
 
-
-
-
+    header("Location: index.php"); 
+    exit; 
+  
 ?>
